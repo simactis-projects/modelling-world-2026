@@ -1,0 +1,11 @@
+name: modelling-world-2026
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - matplotlib
+  - geopandas
+  - geodatasets
+  - jupyter
+  - ipykernel
+  - pip

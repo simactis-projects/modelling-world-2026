@@ -1,0 +1,208 @@
+/*-- scss:defaults --*/
+
+// Fonts: Poppins for headings, Space Mono for body.
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+// RevealJS SCSS API overrides. Quarto layers these on top of the
+// base theme (declared before the theme import per Quarto convention).
+$backgroundColor: #5472FB;
+$mainColor: #4EF622;
+$headingColor: #4EF622;
+$mainFont: 'Space Mono', monospace;
+$headingFont: 'Poppins', sans-serif;
+$headingFontWeight: 700;
+$linkColor: #4EF622;
+$selectionBackgroundColor: #4EF622;
+$selectionColor: #5472FB;
+
+/*-- scss:rules --*/
+
+// Slide surface: solid brand blue, no bleed.
+.reveal .slides {
+  background-color: #5472FB;
+}
+
+// Full-bleed background images render on reveal's separate .backgrounds
+// layer, behind .slides. The opaque blue above would otherwise hide them,
+// leaving the image visible only in the letterbox margins. When the active
+// slide (.present) carries a background image, drop the container fill to
+// transparent so the image shows through. All other slides keep the blue.
+.reveal .slides:has(section.present[data-background-image]) {
+  background-color: transparent;
+}
+
+// Headings: Poppins, keep natural case (override RevealJS uppercase default).
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+  font-family: 'Poppins', sans-serif;
+  text-transform: none;
+  // Extra breathing room between a heading and the slide content below.
+  margin-bottom: 0.8em;
+}
+
+// Body text: Space Mono throughout.
+.reveal p,
+.reveal li,
+.reveal td,
+.reveal th,
+.reveal code,
+.reveal pre {
+  font-family: 'Space Mono', monospace;
+}
+
+// Non-heading text sized down to about 70 percent of the default.
+.reveal p,
+.reveal li,
+.reveal td,
+.reveal th {
+  font-size: 0.7em;
+}
+
+// Blockquote: the Quarto theme paints blockquote text and the left rule a
+// muted grey, which overrides the brand colour. Reset both to lime green
+// Space Mono so quoted text matches the rest of the body.
+.reveal blockquote,
+.reveal blockquote p {
+  color: #4EF622;
+  font-family: 'Space Mono', monospace;
+}
+
+.reveal blockquote {
+  border-left-color: #4EF622;
+}
+
+// Code blocks: plain lime green text, no chrome, no highlighting.
+// Covers plain fenced blocks and Quarto's highlighted source
+// (pre.sourceCode), whose base colour would otherwise inherit the brand
+// foreground (dark) and read poorly on the blue slide background.
+// The pre wrapper and source-code div default to a white bordered box in
+// Quarto; clear the background and border so the blue slide shows through.
+.reveal pre,
+.reveal div.sourceCode {
+  background: transparent;
+  border: none;
+}
+
+.reveal pre code,
+.reveal pre.sourceCode code {
+  background: transparent;
+  border: none;
+  color: #4EF622;
+}
+
+// Force highlight tokens to inherit so no dark token colours show on blue.
+.reveal pre code span {
+  color: inherit;
+}
+
+// Type 1: Title slide layout.
+// Flex column, full height, logo top-left, text block bottom-left.
+.reveal .title-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100%;
+  text-align: left;
+}
+
+.reveal .title-slide .title-logo {
+  width: 180px;
+  height: auto;
+  margin: 0;
+}
+
+.reveal .title-slide .title-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
+.reveal .title-slide .title-main {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.8em;
+  color: #4EF622;
+}
+
+.reveal .title-slide .title-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.1em;
+}
+
+.reveal .title-slide .title-author,
+.reveal .title-slide .title-date {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8em;
+}
+
+// Type 6: Table reset.
+// Render pipe tables as monospace lime green text, no table chrome.
+.reveal table,
+.reveal table th,
+.reveal table td {
+  font-family: 'Space Mono', monospace;
+  color: #4EF622;
+  border: none;
+  background: transparent;
+}
+
+// Type 4: Image and text slide.
+// Blue gradient fade as a pseudo-element over the image column.
+// Solid #5472FB on the text side, fading to transparent over the image.
+.reveal .image-text .image-fade {
+  position: relative;
+}
+
+.reveal .image-text .image-fade img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.reveal .image-text .image-fade::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    #5472FB 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+// Type 9: Graphviz diagram slide.
+// Quarto emits the dot SVG at a large fixed display size. Scale the whole
+// SVG down so the diagram, text, edges, and borders shrink together to
+// about 30 percent of the default footprint.
+.reveal .graphviz-slide svg {
+  width: 1250px;
+  height: auto;
+}
+
+.reveal section[data-background-image] h2 {
+  text-shadow:
+    0 0 20px rgba(84,114,251,1),
+    0 0 40px rgba(84,114,251,1),
+    0 0 60px rgba(84,114,251,1),
+    0 0 80px rgba(84,114,251,1),
+    0 0 100px rgba(84,114,251,0.9);
+}
+
+// Saturn slide: the image is set as a full-bleed background on the slide
+// header; this adds the blue fade overlay as a pseudo-element scoped to the
+// slide via the .saturn-slide class (no inline div). The gradient is fully
+// opaque blue on the left edge and fades to transparent by about halfway
+// across, so the heading and body text stay readable. Padding is cleared so
+// the heading, text, and fade all begin at the true left edge, and the text
+// sits above the fade on a higher z-index.
+.reveal section.saturn-slide {
+  padding: 0;
+  text-align: left;
+}
+

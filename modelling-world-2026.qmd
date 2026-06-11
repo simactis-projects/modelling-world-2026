@@ -1,0 +1,417 @@
+---
+title: "Know what you don't know"
+subtitle: "Building better network data with AI"
+author: "Hugo Nilsson -- Simactis / University of Western Australia"
+date: "17 June 2026"
+format:
+  revealjs:
+    theme: [default, modelling-world-2026.scss]
+    brand: _brand.yaml
+    template-partials:
+      - title-slide.html
+    slide-number: false
+    progress: false
+    controls: false
+    center: false
+    transition: none
+    background-transition: none
+    width: 1280
+    height: 720
+---
+
+## {.title-slide}
+
+<!-- Simactis RevealJS template. One sample slide per type, in order. -->
+<!-- Content convention: no em dashes anywhere. Use double hyphens or colons. -->
+<!-- Type 1: Title slide. Logo top-left, text block bottom-left. -->
+<!-- Layout (logo position, flex column, spacing) is handled in the SCSS. -->
+
+<!-- Dark logo variant reads on the blue title slide. -->
+![](logos/logo-medium-dark.svg){.title-logo}
+
+::: {.title-text}
+[Know what you don't know]{.title-main}
+
+[Building better network data with AI]{.title-sub}
+
+[Hugo Nilsson -- Simactis / University of Western Australia]{.title-author}
+
+[17 June 2026]{.title-date}
+:::
+
+## Building better network data with GeoAI {background-image="assets/lane-polygons.png" background-size="cover"}
+
+<!-- Slide 1: Full-bleed output visual. Title only, no body text. -->
+
+## {.center}
+
+<!-- Type 2: Content slide, no heading. Plain blue background, centred quote. -->
+
+> "AI could eliminate half of all entry-level white-collar jobs within five years."
+>
+> -- Dario Amodei, CEO Anthropic, May 2025
+
+## My first job in transport modelling {background-image="assets/saturn.png" background-size="cover" background-position="right center" .saturn-slide}
+
+Coding networks in Saturn.
+
+## Two ways to use AI
+
+<!-- Type 2: Standard heading plus short paragraphs. -->
+<!-- Body text renders in Space Mono (enforced in SCSS). -->
+
+Replace humans with confident AI  ⇒  deceptive perfection
+
+Equip humans with humble AI       ⇒  honest imperfection
+
+## What do we mean by humble AI?
+
+<!-- Type 2: Standard heading plus short paragraph. -->
+
+It lets you know what it doesn't know.
+
+## Garbage in, garbage out -- what about the network?
+
+::: {style="display:flex; height:50vh; align-items:center; justify-content:center;"}
+<pre style="font-size:0.9em; background:transparent; border:none; color:#4EF622; white-space:pre; margin:0 auto;">
+  Land use    💩
+  Population  💩
+  Parameters  💩   ⇒   👑 Model   ⇒   Forecasts 💩
+  Network     ❓
+</pre>
+:::
+
+## A model that reads every metre of road {.graphviz-slide}
+
+::: {style="display:flex; align-items:center; justify-content:center; height:55vh;"}
+
+```{dot}
+//| echo: false
+digraph flow {
+  bgcolor="transparent"
+  rankdir=LR
+  node [
+    shape=box,
+    style=rounded,
+    color="#4EF622",
+    fontcolor="#4EF622",
+    fontname="Space Mono",
+    fontsize=12,
+    penwidth=1,
+    margin="0.4,0.2",
+    fixedsize=false
+  ]
+  edge [color="#4EF622", penwidth=1, arrowsize=0.5]
+  "Aerial imagery" -> "Imagery extraction"
+  "Base network (OSM)" -> "Imagery extraction"
+  "Imagery extraction" -> "GeoAI models"
+  "GeoAI models" -> "Lane counts"
+  "GeoAI models" -> "Intersection movements"
+  "GeoAI models" -> "..."
+  "GeoAI models" -> "Confidence"
+}
+```
+
+:::
+
+## Malmö {background-image="assets/output-example.png" background-size="cover"}
+
+<!-- Type 3: Full-bleed image slide. No title, no text, no overlay. -->
+
+## Every prediction comes with a confidence score {background-image="assets/confidence-map-zoom.png" background-size="cover"}
+
+<!-- Type 3: Full-bleed image slide with a heading, no body text. -->
+
+## Confidence isn't accuracy, but they're related
+
+<!-- Type 2: Standard heading plus short paragraph. -->
+
+We can only measure accuracy where we have ground truth.
+
+Confidence scores are available across the full dataset.
+
+## Correlating confidence to accuracy
+
+<!-- Type 5: Heading plus a matplotlib chart. echo: false renders only the figure. -->
+
+:::: {.columns}
+
+::: {.column width="65%"}
+
+::: {style="padding-top:2em;"}
+
+```{python}
+#| echo: false
+#| fig-align: center
+import matplotlib.pyplot as plt
+
+# Brand colours: blue background, lime green plot elements.
+bg = '#5472FB'
+fg = '#4EF622'
+
+# Monospace font to match the deck body (Space Mono if available,
+# otherwise the default monospace family).
+plt.rcParams['font.family'] = 'monospace'
+plt.rcParams['font.monospace'] = ['Space Mono'] + plt.rcParams['font.monospace']
+
+# Ascending confidence with placeholder accuracy, to be replaced later.
+confidence = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50,
+              0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00]
+accuracy   = [0.83, 0.85, 0.86, 0.87, 0.88, 0.89, 0.90, 0.91, 0.92, 0.93,
+              0.94, 0.95, 0.95, 0.96, 0.96, 0.96, 0.96, 0.96, 0.96, 0.96]
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+fig.patch.set_facecolor(bg)
+ax.set_facecolor(bg)
+
+# Single solid lime green line.
+ax.plot(confidence, accuracy, color=fg, linestyle='-')
+
+# Labels in lime green, larger with padding.
+ax.set_xlabel('Confidence', color=fg, labelpad=10, fontsize=18)
+ax.set_ylabel('Accuracy', color=fg, labelpad=10, fontsize=18)
+
+# No axis units or tick labels.
+ax.set_xticks([])
+ax.set_yticks([])
+
+# Ticks in lime green.
+ax.tick_params(colors=fg)
+
+# Hide the top and right frame borders; keep left and bottom in lime.
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_color(fg)
+ax.spines['bottom'].set_color(fg)
+ax.spines['left'].set_linewidth(1.5)
+ax.spines['bottom'].set_linewidth(1.5)
+
+plt.tight_layout()
+plt.show()
+```
+
+:::
+
+:::
+
+::: {.column width="35%"}
+
+::: {style="font-size:0.80em; margin-top:2em;"}
+**Extrapolate** to unlabelled data.
+
+**Assumption**: confidence and accuracy are correlated across both labelled and unlabelled data.
+:::
+
+:::
+
+::::
+
+## What does this look like in practice?
+
+::: {style="display:flex; flex-direction:column; align-items:center; margin-top:1em; width:100%;"}
+
+Lane count accuracy by road type
+
+<pre style="background:transparent; border:none; color:#4EF622; margin:0 auto; width:fit-content;">
+  +------------------+------------+----------+
+  | Road type        | Confidence | Accuracy |
+  +------------------+------------+----------+
+  | Residential      |       0.91 |     0.84 |
+  | Unclassified     |       0.88 |     0.82 |
+  | Motorway         |       0.85 |     0.82 |
+  | Tertiary         |       0.85 |     0.79 |
+  | Secondary        |       0.82 |     0.79 |
+  | Primary          |       0.82 |     0.79 |
+  | Trunk            |       0.80 |     0.74 |
+  | Trunk link       |       0.79 |     0.58 |
+  +------------------+------------+----------+
+</pre>
+
+:::
+
+## Smarter labelling: annotate where it matters most
+
+<!-- Type 5: Heading plus a matplotlib chart. echo: false renders only the figure. -->
+
+```{python}
+#| echo: false
+#| fig-align: center
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Brand colours: blue background, lime green plot elements.
+bg = '#5472FB'
+fg = '#4EF622'
+
+plt.rcParams['font.family'] = 'monospace'
+plt.rcParams['font.monospace'] = ['Space Mono'] + plt.rcParams['font.monospace']
+
+# Proportion of data labelled, 0 to 100 percent. Illustrative placeholder
+# curves, to be replaced with real data later.
+x = np.linspace(0, 100, 101)
+
+# Uncertainty-guided: rises steeply to 0.96 by about 20 percent, then flattens.
+uncertainty_guided = 0.83 + 0.13 * (1 - np.exp(-x / 7))
+
+# Random: rises slowly and linearly to 0.96 at 100 percent.
+random = 0.83 + (0.96 - 0.83) * x / 100
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+fig.patch.set_facecolor(bg)
+ax.set_facecolor(bg)
+
+ax.plot(x, uncertainty_guided, color=fg, linestyle='-', label='Uncertainty-guided')
+ax.plot(x, random, color=fg, linestyle='--', label='Random')
+
+# White dashed reference line at the 0.95 accuracy target.
+target = 0.95
+ax.axhline(target, color='white', linestyle='--', linewidth=1)
+ax.text(2, 0.955, 'Target: 0.95', color='white')
+
+ax.set_ylim(0.80, 1.00)
+
+ax.set_xlabel('Proportion labelled', color=fg, fontsize=18)
+ax.set_ylabel('Accuracy', color=fg, fontsize=18)
+
+# No tick labels.
+ax.set_xticks([])
+ax.set_yticks([])
+
+ax.tick_params(colors=fg)
+
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_color(fg)
+ax.spines['bottom'].set_color(fg)
+ax.spines['left'].set_linewidth(1.5)
+ax.spines['bottom'].set_linewidth(1.5)
+
+legend = ax.legend(facecolor=bg, edgecolor=fg, borderpad=0.75)
+for text in legend.get_texts():
+    text.set_color(fg)
+legend.get_frame().set_linewidth(1.5)
+
+plt.tight_layout()
+plt.show()
+```
+
+## {style=""}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+::: {style="display:flex; align-items:flex-start; height:80vh;"}
+[Estimating quality across the full network]{style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1.8em; color:#4EF622; line-height:1.3;"}
+:::
+:::
+
+::: {.column width="30%"}
+::: {style="font-size:1.0em; text-align:center; margin-bottom:0.3em; color:#FFFFFF;"}
+0% labelled
+:::
+```{python}
+#| echo: false
+#| fig-align: center
+import geopandas as gpd
+import matplotlib.pyplot as plt
+
+bg = '#5472FB'
+fg = '#FFFFFF'  # white for estimated
+
+plt.rcParams['font.family'] = 'monospace'
+plt.rcParams['font.monospace'] = ['Space Mono'] + plt.rcParams['font.monospace']
+
+world = gpd.read_file(
+    'https://naturalearth.s3.amazonaws.com/110m_cultural/'
+    'ne_110m_admin_0_countries.zip'
+)
+scandinavia = world[world['NAME'].isin(['Sweden', 'Norway', 'Denmark'])]
+
+cities = [
+    ('CPH', 12.5683, 55.6761, 78),
+    ('STO', 18.0686, 59.3293, 74),
+    ('OSL', 10.7522, 59.9139, 79),
+    ('GOT', 11.9746, 57.7089, 61),
+]
+
+fig, ax = plt.subplots(figsize=(5, 6))
+fig.patch.set_facecolor(bg)
+ax.set_facecolor(bg)
+
+scandinavia.boundary.plot(ax=ax, color='#FFFFFF', linewidth=1)
+
+for name, lon, lat, accuracy in cities:
+    ax.scatter(lon, lat, color=fg, s=80, zorder=5)
+    ax.text(lon + 1.5, lat, f'{name} {accuracy}%', color=fg,
+            va='center', fontsize=13, fontweight='bold')
+
+ax.set_xlim(0, 32)
+ax.set_ylim(54, 72)
+ax.set_axis_off()
+plt.tight_layout()
+plt.show()
+```
+:::
+
+::: {.column width="30%"}
+::: {style="font-size:1.0em; text-align:center; margin-bottom:0.3em;"}
+20% labelled
+:::
+```{python}
+#| echo: false
+#| fig-align: center
+import geopandas as gpd
+import matplotlib.pyplot as plt
+
+bg = '#5472FB'
+fg = '#4EF622'  # lime green for real data
+
+plt.rcParams['font.family'] = 'monospace'
+plt.rcParams['font.monospace'] = ['Space Mono'] + plt.rcParams['font.monospace']
+
+world = gpd.read_file(
+    'https://naturalearth.s3.amazonaws.com/110m_cultural/'
+    'ne_110m_admin_0_countries.zip'
+)
+scandinavia = world[world['NAME'].isin(['Sweden', 'Norway', 'Denmark'])]
+
+cities = [
+    ('CPH', 12.5683, 55.6761, 83),
+    ('STO', 18.0686, 59.3293, 79),
+    ('OSL', 10.7522, 59.9139, 83),
+    ('GOT', 11.9746, 57.7089, 66),
+]
+
+fig, ax = plt.subplots(figsize=(5, 6))
+fig.patch.set_facecolor(bg)
+ax.set_facecolor(bg)
+
+scandinavia.boundary.plot(ax=ax, color=fg, linewidth=1)
+
+for name, lon, lat, accuracy in cities:
+    ax.scatter(lon, lat, color=fg, s=80, zorder=5)
+    ax.text(lon + 1.5, lat, f'{name} {accuracy}%', color=fg,
+            va='center', fontsize=13, fontweight='bold')
+
+ax.set_xlim(0, 32)
+ax.set_ylim(54, 72)
+ax.set_axis_off()
+plt.tight_layout()
+plt.show()
+```
+:::
+
+::::
+
+## Data you can defend {background-image="assets/confidence-map-wide.png" background-size="cover" .saturn-slide}
+
+:::: {.columns}
+
+::: {.column width="50%"}
+Data-driven QA and audit trails for every network attribute.
+:::
+
+::: {.column width="50%"}
+:::
+
+::::

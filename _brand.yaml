@@ -1,0 +1,63 @@
+# Canonical Simactis brand for Quarto (colours, typography, logos).
+# This is the light identity: white background, black text, blue as the
+# primary accent. The RevealJS deck inverts to a blue slide background via
+# simactis-revealjs.scss; this file stays the canonical brand.
+meta:
+  name: Simactis
+  link:
+    home: https://www.simactis.com/
+    linkedin: https://www.linkedin.com/company/simactis/
+  founded: 2025
+color:
+  palette:
+    white: "#FFFFFF"
+    black: "#151515"
+    blue: "#5472FB"
+    green: "#4EF622"
+    red: "#F25757"
+    teal: "#61E8E1"
+    pink: "#FFA9A3"
+    purple: "#D4C1EC"
+    gray: "#474350"
+    lightblue: "#8EE3F5"
+    peach: "#F78E69"
+    orange: "#F17F29"
+    sage: "#5C946E"
+    violet: "#443850"
+  background: white
+  foreground: black
+  primary: blue
+  secondary: violet
+  tertiary: green
+  success: peach
+  info: purple
+  warning: pink
+  danger: orange
+  light: lightblue
+  dark: gray
+  link: red
+typography:
+  fonts:
+    - family: Poppins
+      source: google
+    - family: Lato
+      source: google
+    - family: Libertinus Serif
+      source: google
+    - family: Space Mono
+      source: google
+  base: Libertinus Serif
+  headings: Poppins
+  monospace: Space Mono
+logo:
+  # Local SVGs in logos/, relative to this brand file. light reads on
+  # light backgrounds, dark reads on dark or coloured backgrounds.
+  small:
+    light: logos/logo-small-light.svg
+    dark: logos/logo-small-dark.svg
+  medium:
+    light: logos/logo-medium-light.svg
+    dark: logos/logo-medium-dark.svg
+  large:
+    light: logos/logo-large-light.svg
+    dark: logos/logo-large-dark.svg
