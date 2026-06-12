@@ -216,14 +216,13 @@ Lane count accuracy by road type
   +------------------+------------+----------+
   | Road type        | Confidence | Accuracy |
   +------------------+------------+----------+
-  | Residential      |       0.91 |     0.84 |
-  | Unclassified     |       0.88 |     0.82 |
-  | Motorway         |       0.85 |     0.82 |
-  | Tertiary         |       0.85 |     0.79 |
-  | Secondary        |       0.82 |     0.79 |
-  | Primary          |       0.82 |     0.79 |
-  | Trunk            |       0.80 |     0.74 |
-  | Trunk link       |       0.79 |     0.58 |
+  | Residential      |       0.91 |     0.98 |
+  | Unclassified     |       0.88 |     0.93 |
+  | Motorway         |       0.85 |     0.90 |
+  | Tertiary         |       0.85 |     0.92 |
+  | Secondary        |       0.82 |     0.91 |
+  | Primary          |       0.82 |     0.92 |
+  | Trunk            |       0.80 |     0.86 |
   +------------------+------------+----------+
 </pre>
 
@@ -328,10 +327,10 @@ world = gpd.read_file(
 scandinavia = world[world['NAME'].isin(['Sweden', 'Norway', 'Denmark'])]
 
 cities = [
-    ('CPH', 12.5683, 55.6761, 78),
-    ('STO', 18.0686, 59.3293, 74),
-    ('OSL', 10.7522, 59.9139, 79),
-    ('GOT', 11.9746, 57.7089, 61),
+    ('CPH', 12.5683, 55.6761, 95),
+    ('STO', 18.0686, 59.3293, 94),
+    ('OSL', 10.7522, 59.9139, 93),
+    ('GOT', 11.9746, 57.7089, 93),
 ]
 
 fig, ax = plt.subplots(figsize=(5, 6))
@@ -376,10 +375,10 @@ world = gpd.read_file(
 scandinavia = world[world['NAME'].isin(['Sweden', 'Norway', 'Denmark'])]
 
 cities = [
-    ('CPH', 12.5683, 55.6761, 83),
-    ('STO', 18.0686, 59.3293, 79),
-    ('OSL', 10.7522, 59.9139, 83),
-    ('GOT', 11.9746, 57.7089, 66),
+    ('CPH', 12.5683, 55.6761, 97),
+    ('STO', 18.0686, 59.3293, 96),
+    ('OSL', 10.7522, 59.9139, 97),
+    ('GOT', 11.9746, 57.7089, 96),
 ]
 
 fig, ax = plt.subplots(figsize=(5, 6))
